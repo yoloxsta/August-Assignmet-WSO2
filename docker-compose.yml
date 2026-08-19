@@ -1,0 +1,111 @@
+version: '3.8'
+
+services:
+  # MySQL Database for WSO2 products
+  mysql:
+    image: mysql:8.0
+    container_name: wso2-mysql
+    hostname: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: wso2carbon
+      MYSQL_PASSWORD: wso2carbon
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - wso2-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # WSO2 API Manager
+  apim:
+    image: wso2/wso2am:4.5.0
+    container_name: wso2-apim
+    hostname: apim
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "9443:9443"   # Management console & APIs
+      - "8280:8280"   # HTTP gateway
+      - "8243:8243"   # HTTPS gateway
+    volumes:
+      - ./apim/deployment:/home/wso2carbon/wso2am-4.5.0/repository/deployment
+      - ./apim/logs:/home/wso2carbon/wso2am-4.5.0/repository/logs
+    environment:
+      - WSO2_CARBON_DB_HOST=mysql
+      - WSO2_CARBON_DB_PORT=3306
+      - WSO2_CARBON_DB_USER=wso2carbon
+      - WSO2_CARBON_DB_PASSWORD=wso2carbon
+    networks:
+      - wso2-network
+    healthcheck:
+      test: ["CMD", "curl", "-k", "https://localhost:9443/carbon/admin/login.jsp"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 120s
+
+  # WSO2 Identity Server
+  identity-server:
+    image: wso2/wso2is:6.1.0
+    container_name: wso2-is
+    hostname: identity-server
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "9444:9443"   # Management console (mapped to 9444 to avoid conflict)
+    volumes:
+      - ./is/deployment:/home/wso2carbon/wso2is-6.1.0/repository/deployment
+      - ./is/logs:/home/wso2carbon/wso2is-6.1.0/repository/logs
+    environment:
+      - WSO2_CARBON_DB_HOST=mysql
+      - WSO2_CARBON_DB_PORT=3306
+      - WSO2_CARBON_DB_USER=wso2carbon
+      - WSO2_CARBON_DB_PASSWORD=wso2carbon
+    networks:
+      - wso2-network
+    healthcheck:
+      test: ["CMD", "curl", "-k", "https://localhost:9443/carbon/admin/login.jsp"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 120s
+
+  # WSO2 Micro Integrator
+  micro-integrator:
+    image: wso2/wso2mi:4.3.0
+    container_name: wso2-mi
+    hostname: micro-integrator
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "8290:8290"   # HTTP
+      - "8253:8253"   # HTTPS
+      - "9445:9164"   # Management API (mapped to 9445)
+    volumes:
+      - ./mi/deployment:/home/wso2carbon/wso2mi-4.3.0/repository/deployment
+      - ./mi/logs:/home/wso2carbon/wso2mi-4.3.0/repository/logs
+    networks:
+      - wso2-network
+    healthcheck:
+      test: ["CMD", "curl", "http://localhost:8290/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+networks:
+  wso2-network:
+    driver: bridge
+
+volumes:
+  mysql_data:

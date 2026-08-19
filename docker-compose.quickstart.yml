@@ -1,0 +1,25 @@
+# Quick Start - WSO2 API Manager Only
+# Use this for fastest setup - just API Manager
+# Run: docker-compose -f docker-compose.quickstart.yml up -d
+
+version: '3.8'
+
+services:
+  # WSO2 API Manager - Quick Start
+  apim-quickstart:
+    image: wso2/wso2am:4.5.0
+    container_name: wso2-apim-quickstart
+    hostname: apim
+    ports:
+      - "9443:9443"   # Management console & APIs
+      - "8280:8280"   # HTTP gateway
+      - "8243:8243"   # HTTPS gateway
+    healthcheck:
+      test: ["CMD", "curl", "-k", "https://localhost:9443/carbon/admin/login.jsp"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 120s
+
+# No external dependencies - uses internal H2 database
+# Perfect for learning and testing
