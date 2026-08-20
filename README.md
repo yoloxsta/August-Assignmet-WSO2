@@ -27,7 +27,6 @@ WSO2 is an **open-source middleware platform** that provides a complete suite fo
 | **Enterprise Integrator (EI)** | Full-featured ESB with data integration |
 
 ---
-
 ## Lab Architecture
 
 ```
