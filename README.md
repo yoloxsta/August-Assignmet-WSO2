@@ -28,7 +28,6 @@ WSO2 is an **open-source middleware platform** that provides a complete suite fo
 
 ---
 ## Lab Architecture
-
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                           WSO2 Local Lab Environment                            │
