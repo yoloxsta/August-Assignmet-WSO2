@@ -75,7 +75,6 @@ WSO2 is an **open-source middleware platform** that provides a complete suite fo
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 ---
 
 ## Component Connection Flow
