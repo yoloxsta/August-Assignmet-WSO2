@@ -25,7 +25,6 @@ WSO2 is an **open-source middleware platform** that provides a complete suite fo
 | **Identity Server (IS)** | IAM, SSO, OAuth2, OpenID Connect |
 | **Micro Integrator (MI)** | Lightweight integration runtime |
 | **Enterprise Integrator (EI)** | Full-featured ESB with data integration |
-
 ---
 ## Lab Architecture
 ```
