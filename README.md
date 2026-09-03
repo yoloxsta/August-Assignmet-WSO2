@@ -294,7 +294,6 @@ docker-compose -f docker-compose.yml up -d
 ### Lab 4: Complete Solution
 - Combine all components
 - End-to-end integration
-
 ---
 
 ## Troubleshooting
