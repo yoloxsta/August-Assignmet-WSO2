@@ -262,7 +262,6 @@ cd wso2-lab
 ```powershell
 docker-compose -f docker-compose.yml up -d
 ```
-
 ### Access Consoles:
 | Service | URL | Default Credentials |
 |---------|-----|---------------------|
